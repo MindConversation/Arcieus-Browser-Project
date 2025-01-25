@@ -17,28 +17,32 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Set Up Visual Studio Environment
-    - name: Set up Visual Studio Build Tools
+    # Step 2: Install Visual Studio Build Tools
+    - name: Install Visual Studio Build Tools
+      run: |
+        echo Installing Visual Studio Build Tools...
+        choco install visualstudio2019buildtools --include-optional -y
+
+    # Step 3: Set Up Visual Studio Environment
+    - name: Set up Visual Studio Environment
       shell: cmd
       run: |
         echo Setting up Visual Studio Build Tools...
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat" || exit /b 1
-        echo Visual Studio Build Tools are set up.
+        echo Visual Studio Build Tools set up successfully.
 
-    # Step 3: Compile the Code
+    # Step 4: Compile the Code
     - name: Compile Arcieus.cpp with MSVC
       shell: cmd
       run: |
-        echo Compiling Arcieus.cpp...
         mkdir output
         cl /EHsc Arcieus.cpp /Fe:output\Arcieus.exe || exit /b 1
         echo Compilation successful!
 
-    # Step 4: Copy Dependencies
+    # Step 5: Copy Dependencies
     - name: Copy Dependencies
       shell: cmd
       run: |
-        echo Copying dependencies to the output folder...
         copy icudtl.dat output\ || exit /b 1
         copy icudtl.dll output\ || exit /b 1
         copy en-US.pak output\ || exit /b 1
@@ -46,7 +50,7 @@ jobs:
         copy uk.pak output\ || exit /b 1
         echo Dependencies copied successfully!
 
-    # Step 5: Upload Compiled Artifacts
+    # Step 6: Upload Compiled Artifacts
     - name: Upload Compiled Artifacts
       uses: actions/upload-artifact@v3
       with:
