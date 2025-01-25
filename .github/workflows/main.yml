@@ -1,4 +1,4 @@
-name: Build C++ Executable with MSVC
+name: Build C++ Executable with Dependencies
 
 on:
   push:
@@ -17,31 +17,36 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up MSVC
-    - name: Setup MSVC
+    # Step 2: Set Up Visual Studio Environment
+    - name: Set up Visual Studio Build Tools
       shell: cmd
       run: |
-        echo Setting up MSVC environment...
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
+        echo Setting up Visual Studio Build Tools...
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat" || exit /b 1
+        echo Visual Studio Build Tools are set up.
 
     # Step 3: Compile the Code
-    - name: Compile Arcieus.cpp
+    - name: Compile Arcieus.cpp with MSVC
       shell: cmd
       run: |
+        echo Compiling Arcieus.cpp...
         mkdir output
-        cl /EHsc Arcieus.cpp /Fe:output\Arcieus.exe
+        cl /EHsc Arcieus.cpp /Fe:output\Arcieus.exe || exit /b 1
+        echo Compilation successful!
 
     # Step 4: Copy Dependencies
     - name: Copy Dependencies
       shell: cmd
       run: |
-        copy icudtl.dat output\
-        copy icudtl.dll output\
-        copy en-US.pak output\
-        copy es.pak output\
-        copy uk.pak output\
+        echo Copying dependencies to the output folder...
+        copy icudtl.dat output\ || exit /b 1
+        copy icudtl.dll output\ || exit /b 1
+        copy en-US.pak output\ || exit /b 1
+        copy es.pak output\ || exit /b 1
+        copy uk.pak output\ || exit /b 1
+        echo Dependencies copied successfully!
 
-    # Step 5: Upload Artifacts
+    # Step 5: Upload Compiled Artifacts
     - name: Upload Compiled Artifacts
       uses: actions/upload-artifact@v3
       with:
