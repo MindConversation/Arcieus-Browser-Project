@@ -1,4 +1,4 @@
-name: Build C++ Executable with Bash Commands
+name: Build C++ Executable with Bash and YAML
 
 on:
   push:
@@ -17,17 +17,16 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Compile using MSVC with Bash commands
+    # Step 2: Compile Arcieus.cpp using MSVC with Bash
     - name: Compile with MSVC
       shell: bash
       run: |
         echo "Setting up MSVC environment..."
-        "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/Common7/Tools/VsDevCmd.bat" || exit 1
-        echo "Compiling Arcieus.cpp..."
         mkdir -p output
+        echo "Compiling Arcieus.cpp..."
         cl /EHsc Arcieus.cpp /Fe:output/Arcieus.exe || exit 1
 
-    # Step 3: Copy dependencies with Bash
+    # Step 3: Copy Dependencies with Bash
     - name: Copy Dependencies
       shell: bash
       run: |
@@ -38,7 +37,7 @@ jobs:
         cp es.pak output/ || exit 1
         cp uk.pak output/ || exit 1
 
-    # Step 4: Upload artifacts
+    # Step 4: Upload Artifacts (Executable and Dependencies)
     - name: Upload Compiled Artifacts
       uses: actions/upload-artifact@v3
       with:
