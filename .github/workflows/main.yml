@@ -1,4 +1,4 @@
-name: Build C++ Executable
+name: Build C++ Executable with Dependencies
 
 on:
   push:
@@ -10,9 +10,6 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Set up job
-      run: echo Setting up the job...
-
     - name: Checkout Repository
       uses: actions/checkout@v3
 
@@ -25,9 +22,11 @@ jobs:
         echo %PATH%
 
     - name: Verify cl Command
+      shell: cmd
       run: cl /?
 
     - name: Compile Arcieus.cpp with MSVC
+      shell: cmd
       run: |
         mkdir output
         cl /EHsc Arcieus.cpp /Fe:output/Arcieus.exe
