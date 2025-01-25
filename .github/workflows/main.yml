@@ -1,10 +1,7 @@
-name: Build C++ Executable with Dependencies
+name: Build C++ Executable
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -13,46 +10,35 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # Step 1: Checkout the repository
+    - name: Set up job
+      run: echo Setting up the job...
+
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Install Visual Studio Build Tools
     - name: Install Visual Studio Build Tools
-      run: |
-        echo Installing Visual Studio Build Tools...
-        choco install visualstudio2019buildtools --include-optional -y
+      run: choco install visualstudio2019buildtools --params "'--add Microsoft.VisualStudio.Workload.VCTools'" -y
 
-    # Step 3: Initialize Visual Studio Environment
     - name: Initialize Visual Studio Environment
-      shell: cmd
       run: |
-        echo Initializing Visual Studio Build Tools...
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat" || exit /b 1
-        echo Visual Studio Build Tools initialized successfully.
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
+        echo %PATH%
 
-    # Step 4: Compile the Code
+    - name: Verify cl Command
+      run: cl /?
+    
     - name: Compile Arcieus.cpp with MSVC
-      shell: cmd
       run: |
         mkdir output
-        cl /EHsc Arcieus.cpp /Fe:output\Arcieus.exe || exit /b 1
-        echo Compilation successful!
+        cl /EHsc Arcieus.cpp /Fe:output/Arcieus.exe
 
-    # Step 5: Copy Dependencies
     - name: Copy Dependencies
-      shell: cmd
       run: |
-        copy icudtl.dat output\ || exit /b 1
-        copy icudtl.dll output\ || exit /b 1
-        copy en-US.pak output\ || exit /b 1
-        copy es.pak output\ || exit /b 1
-        copy uk.pak output\ || exit /b 1
-        echo Dependencies copied successfully!
+        xcopy locales output\locales /E /I
+        xcopy icudtl.dat output\
 
-    # Step 6: Upload Compiled Artifacts
     - name: Upload Compiled Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Compiled-Arcieus-and-Dependencies
+        name: Arcieus
         path: output/
