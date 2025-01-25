@@ -21,12 +21,12 @@ jobs:
 
     - name: Initialize Visual Studio Environment
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
+        "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
         echo %PATH%
 
     - name: Verify cl Command
       run: cl /?
-    
+
     - name: Compile Arcieus.cpp with MSVC
       run: |
         mkdir output
