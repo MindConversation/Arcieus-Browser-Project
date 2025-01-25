@@ -1,4 +1,4 @@
-name: Build C++ Executable with Dependencies
+name: Build C++ Executable with Bash Commands
 
 on:
   push:
@@ -17,29 +17,31 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up MSVC environment and compile the C++ code
-    - name: Setup MSVC and Compile
-      shell: cmd
+    # Step 2: Setup MSVC environment and Compile
+    - name: Compile with MSVC using Bash
+      shell: bash
       run: |
-        echo Initializing MSVC environment...
-        call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
+        echo "Initializing MSVC environment..."
+        "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/Common7/Tools/VsDevCmd.bat"
+        echo "Creating output directory..."
         mkdir output
-        cl /EHsc Arcieus.cpp /Fe:output\Arcieus.exe
+        echo "Compiling Arcieus.cpp..."
+        cl /EHsc Arcieus.cpp /Fe:output/Arcieus.exe
 
-    # Step 3: Copy Dependencies
+    # Step 3: Copy Dependencies using Bash
     - name: Copy Dependencies
-      shell: cmd
+      shell: bash
       run: |
-        echo Copying dependencies...
-        copy icudtl.dat output\
-        copy icudtl.dll output\
-        copy en-US.pak output\
-        copy es.pak output\
-        copy uk.pak output\
+        echo "Copying dependencies to output directory..."
+        cp icudtl.dat output/
+        cp icudtl.dll output/
+        cp en-US.pak output/
+        cp es.pak output/
+        cp uk.pak output/
 
-    # Step 4: Upload Executable and Dependencies as an artifact
-    - name: Upload Executable and Dependencies
+    # Step 4: Upload artifacts
+    - name: Upload Compiled Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Compiled-Arcieus-with-Dependencies
+        name: Compiled-Arcieus-and-Dependencies
         path: output/
