@@ -23,13 +23,13 @@ jobs:
         echo Installing Visual Studio Build Tools...
         choco install visualstudio2019buildtools --include-optional -y
 
-    # Step 3: Set Up Visual Studio Environment
-    - name: Set up Visual Studio Environment
+    # Step 3: Initialize Visual Studio Environment
+    - name: Initialize Visual Studio Environment
       shell: cmd
       run: |
-        echo Setting up Visual Studio Build Tools...
+        echo Initializing Visual Studio Build Tools...
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat" || exit /b 1
-        echo Visual Studio Build Tools set up successfully.
+        echo Visual Studio Build Tools initialized successfully.
 
     # Step 4: Compile the Code
     - name: Compile Arcieus.cpp with MSVC
