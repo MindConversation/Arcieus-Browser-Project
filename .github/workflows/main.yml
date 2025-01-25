@@ -1,0 +1,45 @@
+name: Build C++ Executable with Dependencies
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    # Step 2: Set up MSVC environment and compile the C++ code
+    - name: Setup MSVC and Compile
+      shell: cmd
+      run: |
+        echo Initializing MSVC environment...
+        call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
+        mkdir output
+        cl /EHsc Arcieus.cpp /Fe:output\Arcieus.exe
+
+    # Step 3: Copy Dependencies
+    - name: Copy Dependencies
+      shell: cmd
+      run: |
+        echo Copying dependencies...
+        copy icudtl.dat output\
+        copy icudtl.dll output\
+        copy en-US.pak output\
+        copy es.pak output\
+        copy uk.pak output\
+
+    # Step 4: Upload Executable and Dependencies as an artifact
+    - name: Upload Executable and Dependencies
+      uses: actions/upload-artifact@v3
+      with:
+        name: Compiled-Arcieus-with-Dependencies
+        path: output/
