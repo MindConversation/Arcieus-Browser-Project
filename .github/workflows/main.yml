@@ -1,4 +1,4 @@
-name: Build C++ Executable with Dependencies
+name: Build C++ Executable with GCC
 
 on:
   push:
@@ -13,23 +13,19 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Install Visual Studio Build Tools
-      run: choco install visualstudio2019buildtools --params "'--add Microsoft.VisualStudio.Workload.VCTools'" -y
-
-    - name: Initialize Visual Studio Environment
+    - name: Install MinGW (GCC)
       run: |
-        "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
-        echo %PATH%
+        choco install mingw -y
+        echo "Add MinGW to PATH"
+        setx PATH "%PATH%;C:\tools\mingw64\bin"
 
-    - name: Verify cl Command
-      shell: cmd
-      run: cl /?
+    - name: Verify g++ Command
+      run: g++ --version
 
-    - name: Compile Arcieus.cpp with MSVC
-      shell: cmd
+    - name: Compile Arcieus.cpp with GCC
       run: |
         mkdir output
-        cl /EHsc Arcieus.cpp /Fe:output/Arcieus.exe
+        g++ -o output/Arcieus.exe Arcieus.cpp
 
     - name: Copy Dependencies
       run: |
