@@ -17,27 +17,26 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Setup MSVC environment and Compile
-    - name: Compile with MSVC using Bash
+    # Step 2: Compile using MSVC with Bash commands
+    - name: Compile with MSVC
       shell: bash
       run: |
-        echo "Initializing MSVC environment..."
-        "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/Common7/Tools/VsDevCmd.bat"
-        echo "Creating output directory..."
-        mkdir output
+        echo "Setting up MSVC environment..."
+        "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/Common7/Tools/VsDevCmd.bat" || exit 1
         echo "Compiling Arcieus.cpp..."
-        cl /EHsc Arcieus.cpp /Fe:output/Arcieus.exe
+        mkdir -p output
+        cl /EHsc Arcieus.cpp /Fe:output/Arcieus.exe || exit 1
 
-    # Step 3: Copy Dependencies using Bash
+    # Step 3: Copy dependencies with Bash
     - name: Copy Dependencies
       shell: bash
       run: |
         echo "Copying dependencies to output directory..."
-        cp icudtl.dat output/
-        cp icudtl.dll output/
-        cp en-US.pak output/
-        cp es.pak output/
-        cp uk.pak output/
+        cp icudtl.dat output/ || exit 1
+        cp icudtl.dll output/ || exit 1
+        cp en-US.pak output/ || exit 1
+        cp es.pak output/ || exit 1
+        cp uk.pak output/ || exit 1
 
     # Step 4: Upload artifacts
     - name: Upload Compiled Artifacts
